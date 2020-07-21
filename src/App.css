@@ -2,10 +2,14 @@
   text-align: center;
 }
 
-a { cursor: pointer; }
+span { cursor: pointer; }
+
+.container {
+  margin: 20px;
+}
 
 .dashboard-menu {
-  padding: 0 0 0 20px;
+  padding: 0;
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
@@ -24,4 +28,21 @@ a { cursor: pointer; }
 .dashboard-menu li {
   display: list-item;
   padding: 15px 15px 15px 15px;
+}
+
+
+.search {
+  color: #5F6368;
+}
+
+input,
+input::-webkit-input-placeholder {
+  font-size: 17px;
+  line-height: 3;
+  color: #78797A;
+  height: inherit;
+  padding-left: 10px;
+  background-color: #F1F3F4;
+  border-radius: 5px;
+  border: 1px;
 }
