@@ -14,13 +14,14 @@ class App extends React.Component {
       id: i + 1,
       name: "Item " + (i + 1),
     }));
+    let dataStorage = JSON.parse(localStorage.getItem('data'))|| []; // JSON.parse(JSON.stringify())|| [];
 
     this.tabs = ["All", "Liked", "Removed"];
 
     this.state = {
       pageOfItems: [],
       tab: "All",
-      data: exampleItems,
+      data: dataStorage,
       search: ''
     };
 
@@ -59,13 +60,12 @@ class App extends React.Component {
   };
 
   render() {
-    let dataStorage = localStorage.getItem('data') || [] // JSON.parse(JSON.stringify())|| [];
     return (
       <div className="container">
         <Search value={this.state.search} handleSearch={this.handleSearch}></Search>
         <ul className="dashboard-menu">{this.getListTab()}</ul>
         <ListData data={this.state.pageOfItems}></ListData>
-        <Pagination items={dataStorage} onChangePage={this.onChangePage} />
+        <Pagination items={this.state.data} onChangePage={this.onChangePage} />
       </div>
     );
   }

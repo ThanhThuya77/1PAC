@@ -1,4 +1,5 @@
 import * as React from "react";
+import './style.css';
 
 class ListData extends React.Component {
   onChangePage(pageOfItems) {
@@ -7,11 +8,10 @@ class ListData extends React.Component {
   }
 
   render() {
-    let newData = this.props.data && this.props.data.data && this.props.data.data[0] || [];
     return (
       <div>
-        {newData.map((item) => (
-          <div key={item.id}>{item.name}</div>
+        {this.props.data.map((item) => (
+          <div key={item.data[0].nasa_id} className='item-data'>{item.data[0].title}</div>
         ))}
       </div>
     );
