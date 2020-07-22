@@ -11,6 +11,7 @@ const Search = (props) => {
         className="search-input"
         placeholder="search"
         onChange={(e) => props.handleSearch(e)}
+        onKeyDown={(e) => props.handleKeyDown(e)}
         id="search-bar"
       />
     </div>

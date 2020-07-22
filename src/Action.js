@@ -1,13 +1,14 @@
 import {get} from './Service'
 
-function getAllData(search) {
+function getAllData(search='cat') {
     let url = 'https://images-api.nasa.gov';
-    url = search ? `${url}/search?q=${search}` : url;
+    url = `${url}/search?q=${search}`;
     return get(url)
         .then(data => {
-            const rs = JSON.stringify(data.collection && data.collection.items);
+            const rs = data.collection && data.collection.items;
             localStorage.clear();
-            localStorage.setItem('data', rs);
+            localStorage.setItem('data', JSON.stringify(rs));
+            return rs;
         })
         .catch(e => {
             localStorage.setItem('error', 'can not get data');

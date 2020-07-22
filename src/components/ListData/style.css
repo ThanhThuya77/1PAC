@@ -1,4 +1,39 @@
 .item-data {
-    border-bottom: 1px solid black;
-    padding-bottom: 10px;
+    padding-bottom: 30px;
+    text-align: center;
+}
+
+button {
+    width: 30px;
+    height: 30px;
+    margin: 10px 14px 0 0;
+    background-color: unset;
+    border: none;
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Do not repeat the image */
+    background-size: cover;
+}
+
+button:focus {
+    outline: unset;
+}
+
+.like {
+    background-image:  url('../../assets/images/like.svg');
+}
+
+.unlike {
+    background-image:  url('../../assets/images/heart.svg');
+}
+
+.remove {
+    background-image:  url('../../assets/images/delete1.svg');
+}
+
+.undo {
+    background-image:  url('../../assets/images/undo.svg');
+}
+
+.edit {
+    background-image:  url('../../assets/images/edit.svg');
 }

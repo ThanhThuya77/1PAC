@@ -5,14 +5,15 @@
 span { cursor: pointer; }
 
 .container {
-  margin: 20px;
+  margin: 0 auto;
+  width: 500px;
 }
 
 .dashboard-menu {
   padding: 0;
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-start;
+  justify-content: center;
   list-style: none;
   width: 100%;
   color: black;
@@ -23,16 +24,24 @@ span { cursor: pointer; }
   padding-bottom: 10px;
   background-color: #bde0f1;
   color: black;
-  border-left: 6px solid #35C9F5;
+  /* border-left: 6px solid #35C9F5; */
 }
 .dashboard-menu li {
   display: list-item;
   padding: 15px 15px 15px 15px;
+  min-width: 50px;
+  text-align: center;
+  border-radius: 4px;
 }
 
 
 .search {
   color: #5F6368;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  height: 44px;
 }
 
 input,
