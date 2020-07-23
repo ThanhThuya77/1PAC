@@ -3,6 +3,7 @@ import "./App.css";
 import Pagination from "./components/Pagination/index";
 import ListData from "./components/ListData/index";
 import Search from "./components/Search/index";
+import Dropdown from "./components/Dropdown/index";
 import { getAllData } from "./Action";
 
 class App extends React.Component {
@@ -15,56 +16,57 @@ class App extends React.Component {
       data: [],
       search: "",
       pager: {},
+      sort: "Title",
+      showDropdown: false,
+      loading: true,
     };
     this.dataGlobal = [];
   }
 
-  componentDidMount() {
+  callAPI = () => {
+    this.setState({ loading: true });
     const promise1 = new Promise((resolve, reject) => {
-      resolve(getAllData());
+      resolve(getAllData(this.state.search));
     });
     promise1.then((data) => {
-      this.setState({data}, () => {
+      this.setState({ data, pageOfData: (data && data.slice(0, 9)) || [], loading: false }, () => {
         this.setPage(1);
       });
     });
   }
 
+  componentDidMount() {
+    this.callAPI();
+  }
+
   handleSearch = (e) => {
     let value = e.currentTarget.value;
-    this.setState({search: value});
+    this.setState({ search: value });
   };
 
   handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      const promise1 = new Promise((resolve, reject) => {
-        resolve(getAllData(this.state.search));
-      });
-  
-      promise1.then((data) => {
-        this.setState((state, props) => ({
-          data,
-          pageOfData: data.slice(0, 10),
-        }));
-      });
+    if (e.key === "Enter") {
+      this.callAPI();
     }
-  }
+  };
 
   filterDataByTab = (tab) => {
-    let data = [...JSON.parse(localStorage.getItem('data'))];
-    if(tab === 'Liked') {
-      data = data.filter(item => item.like && !item.remove);
+    let data = [...JSON.parse(localStorage.getItem("data"))];
+    let newArr = [];
+    if (tab === "Liked") {
+      data.forEach((item, idx) => item.like && !item.remove & newArr.push({ ...item, idx }));
+    } else if (tab === "Removed") {
+      data.forEach((item, idx) => item.remove && newArr.push({ ...item, idx }));
+    } else {
+      data.forEach((item, idx) => !item.like && !item.remove && newArr.push({ ...item, idx }));
     }
-    else if (tab === 'Removed') {
-      data = data.filter(item => item.remove);
-    }
-    return data;
-  }
+    return newArr;
+  };
 
   setCurrentTab = (newTab) => {
     const data = this.filterDataByTab(newTab);
-    this.setState({ tab: newTab, data, pageOfData: data.slice(0, 10)}, () => {
-    this.setPage(1);
+    this.setState({ tab: newTab, data, pageOfData: data.slice(0, 9) }, () => {
+      this.setPage(1);
     });
   };
 
@@ -84,19 +86,19 @@ class App extends React.Component {
 
   getPager(totalItems, currentPage, pageSize) {
     currentPage = currentPage || 1;
-    pageSize = pageSize || 10;
+    pageSize = pageSize || 9;
     var totalPages = Math.ceil(totalItems / pageSize);
 
     var startPage, endPage;
-    if (totalPages <= 10) {
-      // less than 10 total pages so show all
+    if (totalPages <= 9) {
+      // less than 9 total pages so show all
       startPage = 1;
       endPage = totalPages;
     } else {
-      // more than 10 total pages so calculate start and end pages
+      // more than 9 total pages so calculate start and end pages
       if (currentPage <= 6) {
         startPage = 1;
-        endPage = 10;
+        endPage = 9;
       } else if (currentPage + 4 >= totalPages) {
         startPage = totalPages - 9;
         endPage = totalPages;
@@ -137,30 +139,88 @@ class App extends React.Component {
     }
 
     let newPager = this.getPager(data.length, page);
-    let pageOfData = data && data.slice(newPager.startIndex, newPager.endIndex + 1);
-    this.setState({ pager: newPager, pageOfData: pageOfData });
-    // this.setState((state, props) => ({ pager: newPager, pageOfData: pageOfData }));
-  }
+    let pageOfData =
+      data && data.slice(newPager.startIndex, newPager.endIndex + 1);
+      this.setState((state, props) => ({ pager: newPager, pageOfData: pageOfData }));
+  };
 
   updateData = (index, key, value) => {
-    let data = JSON.parse(localStorage.getItem('data')) || [];
-    data[index] = {...data[index], [key]: value};
-    localStorage.setItem('data', JSON.stringify(data));
+    let data = JSON.parse(localStorage.getItem("data")) || [];
+    data[index] = { ...data[index], [key]: value };
+    localStorage.setItem("data", JSON.stringify(data));
     const filterData = this.filterDataByTab(this.state.tab);
-    this.setState((state, props) => ({ data: filterData, pageOfData: filterData.slice(0, 10) }));
-  }
+    this.setState((state, props) => ({
+      data: filterData,
+      pageOfData: filterData.slice(0, 9),
+    }));
+  };
+
+  handleChange = (value) => () => {
+    let mod = value === "A-Z" ? 1 : -1;
+    let data = this.state.data.sort(function (a, b) {
+      if (a.data[0].title < b.data[0].title) {
+        return -1 * mod;
+      }
+      if (a.data[0].title > b.data[0].title) {
+        return 1 * mod;
+      }
+      return 0;
+    });
+    this.setState({
+      sort: value,
+      showDropdown: false,
+      data,
+      pageOfData: data.slice(0, 9),
+    });
+  };
+
+  handleToggle = (e) => {
+    e.target.focus();
+    this.setState({ showDropdown: !this.state.showDropdown });
+  };
+
+  handleBlur = (e) => {
+    if (this.state.showDropdown) {
+      setTimeout(() => {
+        this.setState({ showDropdown: false });
+      }, 200);
+    }
+  };
 
   render() {
+    const {
+      loading,
+      search,
+      sort,
+      showDropdown,
+      pageOfData,
+      pager,
+    } = this.state;
     return (
       <div className="container">
-        <Search
-          value={this.state.search}
-          handleSearch={this.handleSearch}
-          handleKeyDown={this.handleKeyDown}
-        ></Search>
+        <div className="tool">
+          <Search
+            value={search}
+            handleSearch={this.handleSearch}
+            handleKeyDown={this.handleKeyDown}
+          ></Search>
+          <Dropdown
+            value={sort}
+            show={showDropdown}
+            handleToggle={this.handleToggle}
+            handleBlur={this.handleBlur}
+            handleChange={this.handleChange}
+          ></Dropdown>
+        </div>
         <ul className="dashboard-menu">{this.getListTab()}</ul>
-        <ListData data={this.state.pageOfData} updateData={this.updateData}></ListData>
-        <Pagination pager={this.state.pager} setPage={this.setPage} />
+        {loading ? (
+          <div className="loading" />
+        ) : (
+          <div>
+            <ListData data={pageOfData} updateData={this.updateData}></ListData>
+            <Pagination pager={pager} setPage={this.setPage} />
+          </div>
+        )}
       </div>
     );
   }

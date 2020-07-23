@@ -6,7 +6,8 @@ span { cursor: pointer; }
 
 .container {
   margin: 0 auto;
-  width: 500px;
+  width: 700px;
+  text-align: center;
 }
 
 .dashboard-menu {
@@ -40,8 +41,8 @@ span { cursor: pointer; }
   align-items: center;
   display: flex;
   justify-content: center;
-  margin-top: 20px;
   height: 44px;
+  padding-right: 10px;
 }
 
 input,
@@ -54,4 +55,22 @@ input::-webkit-input-placeholder {
   background-color: #F1F3F4;
   border-radius: 5px;
   border: 1px;
+}
+
+.tool {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.loading{
+  height: 300px;
+    width: 300px;
+    margin: 0 auto;
+  background-image:  url('./assets/images/loading.gif');
+  background-color: unset;
+  border: none;
+  background-position: center; /* Center the image */
+  background-repeat: no-repeat; /* Do not repeat the image */
+  background-size: cover;
 }

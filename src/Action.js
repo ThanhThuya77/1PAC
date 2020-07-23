@@ -1,8 +1,8 @@
 import {get} from './Service'
 
-function getAllData(search='cat') {
+function getAllData(search) {
     let url = 'https://images-api.nasa.gov';
-    url = `${url}/search?q=${search}`;
+    url = `${url}/search?q=${search || 'cat'}`;
     return get(url)
         .then(data => {
             const rs = data.collection && data.collection.items;
